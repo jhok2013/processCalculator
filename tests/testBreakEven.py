@@ -131,10 +131,10 @@ class TestBreakEven(unittest.TestCase):
         }       
         actualBePoint = 10.46
         be = SimpleBreakEven.SimpleBreakEven(
-            fixed1      =data["process1"]["fixed"],
-            variable1   =data["process1"]["variable"],
-            fixed2      =data["process2"]["fixed"],
-            variable2   =data["process2"]["variable"]
+            fixed1=data["process1"]["fixed"],
+            variable1=data["process1"]["variable"],
+            fixed2=data["process2"]["fixed"],
+            variable2=data["process2"]["variable"]
         )
 
         # Act

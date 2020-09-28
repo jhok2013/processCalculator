@@ -15,9 +15,7 @@ class TestBreakEven(unittest.TestCase):
             },
             "process2": {
                 "fixed": 353.22,
-                "variable": [
-                    15.34
-                ]
+                "variable": [15.34]
             }
         }
         be = SimpleBreakEven.SimpleBreakEven()

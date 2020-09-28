@@ -1,5 +1,5 @@
-from context import processCalculator
-from processCalculator import breakEven
+from context import processcalculator
+from processcalculator import breakEven
 import unittest
 
 class testBreakEven(unittest.TestCase):

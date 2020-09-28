@@ -1,5 +1,5 @@
 from context import processcalculator
-from processcalculator import breakEven
+from processcalculator import SimpleBreakEven
 import unittest
 
 class testBreakEven(unittest.TestCase):
@@ -17,7 +17,7 @@ class testBreakEven(unittest.TestCase):
                 ]
             }
         }
-        be = breakEven.breakEven()
+        be = SimpleBreakEven.SimpleBreakEven()
         #Act
         be.setFixed1(data["process1"]["fixed"])
         be.setVariable1(data["process1"]["variable"][0])
@@ -54,7 +54,7 @@ class testBreakEven(unittest.TestCase):
             }
         }       
         # Populate breakEven calculator
-        be = breakEven.breakEven(
+        be = SimpleBreakEven.SimpleBreakEven(
             fixed1      =data["process1"]["fixed"],
             variable1   =data["process1"]["variable"],
             fixed2      =data["process2"]["fixed"],
@@ -86,7 +86,7 @@ class testBreakEven(unittest.TestCase):
         }       
         actualBePoint = 12.39
         # Populate breakEven calculator
-        be = breakEven.breakEven(
+        be = SimpleBreakEven.SimpleBreakEven(
             fixed1      =data["process1"]["fixed"],
             variable1   =data["process1"]["variable"][0],
             fixed2      =data["process2"]["fixed"],
@@ -118,7 +118,7 @@ class testBreakEven(unittest.TestCase):
         }       
         actualBePoint = 10.46
         # Populate breakEven calculator
-        be = breakEven.breakEven(
+        be = SimpleBreakEven.SimpleBreakEven(
             fixed1      =data["process1"]["fixed"],
             variable1   =data["process1"]["variable"],
             fixed2      =data["process2"]["fixed"],

@@ -23,13 +23,24 @@ TEST_DATA: dict = {
         ]
     }
 }
-    
-SBE: SimpleBreakEven = SimpleBreakEven.SimpleBreakEven()
 
+NEG_DATA: dict = {
+    'str_input': 'This is a string.',
+    'invalid_list': ['This is a string'],
+    'valid_list': [10.00, 20.00, 30.00],
+    'bool_input': [True, False]
+}
+    
 class TestBreakEven(unittest.TestCase):
     '''
 
     '''
+
+    def setUp(self) -> None:
+        self.test_break_even = SimpleBreakEven.SimpleBreakEven()
+    
+    def tearDown(self) -> None:
+        self.test_break_even = None
 
     def test_setter_methods(self):
         '''
@@ -43,16 +54,16 @@ class TestBreakEven(unittest.TestCase):
         test_variable2: float = TEST_DATA["process2"]["variable"][0]
 
         #Act
-        SBE.set_fixed1(test_fixed1)
-        SBE.set_fixed2(test_fixed2)
-        SBE.set_variable1(test_variable1)
-        SBE.set_variable2(test_variable2)
+        self.test_break_even.set_fixed1(test_fixed1)
+        self.test_break_even.set_fixed2(test_fixed2)
+        self.test_break_even.set_variable1(test_variable1)
+        self.test_break_even.set_variable2(test_variable2)
 
         #Assert
-        self.assertEqual(SBE.fixed1, test_fixed1)
-        self.assertEqual(SBE.fixed2, test_fixed2)
-        self.assertEqual(SBE.variable1, test_variable1)
-        self.assertEqual(SBE.variable2, test_variable2)
+        self.assertEqual(self.test_break_even.fixed1, test_fixed1)
+        self.assertEqual(self.test_break_even.fixed2, test_fixed2)
+        self.assertEqual(self.test_break_even.variable1, test_variable1)
+        self.assertEqual(self.test_break_even.variable2, test_variable2)
 
     def test_set_constructor(self):
         '''
@@ -67,7 +78,8 @@ class TestBreakEven(unittest.TestCase):
 
 
         # Act
-        SBE = SimpleBreakEven.SimpleBreakEven(
+        
+        be: SimpleBreakEven = self.test_break_even(
             fixed1=test_fixed1,
             variable1=test_variable1,
             fixed2=test_fixed2,
@@ -75,10 +87,10 @@ class TestBreakEven(unittest.TestCase):
         )
 
         # Assert
-        self.assertEqual(SBE.fixed1, test_fixed1)
-        self.assertEqual(SBE.fixed2, test_fixed2)
-        self.assertEqual(SBE.variable1, test_variable1)
-        self.assertEqual(SBE.variable2, test_variable2)
+        self.assertEqual(self.test_break_even.fixed1, test_fixed1)
+        self.assertEqual(self.test_break_even.fixed2, test_fixed2)
+        self.assertEqual(self.test_break_even.variable1, test_variable1)
+        self.assertEqual(self.test_break_even.variable2, test_variable2)
 
     def test_simple_calc_single_value(self):
         '''
@@ -87,7 +99,7 @@ class TestBreakEven(unittest.TestCase):
 
         # Arrange
         actual_break_even_point: float = 12.39
-        SBE = SimpleBreakEven.SimpleBreakEven(
+        self.test_break_even(
             fixed1=TEST_DATA["process1"]["fixed"],
             variable1=TEST_DATA["process1"]["variable"][0],
             fixed2=TEST_DATA["process2"]["fixed"],
@@ -95,7 +107,7 @@ class TestBreakEven(unittest.TestCase):
         )
 
         # Act
-        break_even_point: float = SBE.calc_simple_be()
+        break_even_point: float = self.test_break_even.calc_simple_be()
 
         # Assert
         self.assertEqual(break_even_point, actual_break_even_point)
@@ -107,7 +119,7 @@ class TestBreakEven(unittest.TestCase):
 
         # Arrange
         actual_break_even_point: float = 10.46
-        SBE = SimpleBreakEven.SimpleBreakEven(
+        self.test_break_even(
             fixed1=TEST_DATA["process1"]["fixed"],
             variable1=TEST_DATA["process1"]["variable"],
             fixed2=TEST_DATA["process2"]["fixed"],
@@ -115,10 +127,21 @@ class TestBreakEven(unittest.TestCase):
         )
 
         # Act
-        break_even_point: float = SBE.calc_simple_be()
+        break_even_point: float = self.test_break_even.calc_simple_be()
         
         # Assert
         self.assertEqual(break_even_point, actual_break_even_point)
+
+    def test_input_invalid(self) -> None:
+        '''
+
+        '''
+
+        # Arrange
+        
+        # Act
+
+        # Assert
 
 if __name__ == "__main__":
     unittest.main() 

@@ -36,7 +36,7 @@ class SimpleBreakEven():
 
     def __init__(self, fixed1: float = 0.00,
                        fixed2: float = 0.00,
-                       variable1: list = [0.00],
+                       variable1: list  = [0.00],
                        variable2: list = [0.00]):
         '''
         Description
@@ -61,6 +61,13 @@ class SimpleBreakEven():
         self.variable2 = self.__validate(variable2)
         self.fixed1 = self.__validate(fixed1)
         self.fixed2 = self.__validate(fixed2)
+    
+    def __call__(self, fixed1: float = 0.00,
+                       fixed2: float = 0.00,
+                       variable1: float = [0.00],
+                       variable2: float = [0.00]):
+        self.__init__(fixed1=fixed1, fixed2=fixed2, variable1=variable1, variable2=variable2)
+        return self 
 
     def set_fixed1(self, new_fixed1: float):
         '''

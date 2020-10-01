@@ -169,7 +169,7 @@ class SimpleBreakEven():
         
         result: bool
         try:
-            if value > 0:
+            if value >= 0:
                 result = True
             else:
                 result = False
@@ -195,13 +195,13 @@ class SimpleBreakEven():
             any numeric type or a list. 
         '''
 
-        list_type: str = "<type 'list'>"
+        list_type: str = "<class 'list'>"
         value_type: str = str(type(value))
         result: any
         try:
             if value_type == list_type:
                 for x in value:
-                    if self.__valid_type(value) and self.__valid_number(value):
+                    if self.__valid_type(x) and self.__valid_number(x):
                         result = value
             else:
                 if self.__valid_type(value) and self.__valid_number(value):

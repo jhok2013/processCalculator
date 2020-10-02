@@ -29,7 +29,15 @@ class SimpleBreakEven():
         the decimal limit used in the arguments
     '''
 
-    def __init__(self, fixed1=0, fixed2=0, variable1=[0], variable2=[0]):
+    fixed1: float
+    fixed2: float
+    variable1: list
+    variable2: list
+
+    def __init__(self, fixed1: float = 0.00,
+                       fixed2: float = 0.00,
+                       variable1: list  = [0.00],
+                       variable2: list = [0.00]):
         '''
         Description
         -----------
@@ -49,12 +57,19 @@ class SimpleBreakEven():
             Default is [0.00].
         '''
 
-        self.variable1 = variable1        
-        self.variable2 = variable2
-        self.fixed1 = fixed1
-        self.fixed2 = fixed2
+        self.variable1 = self.__validate(variable1)        
+        self.variable2 = self.__validate(variable2)
+        self.fixed1 = self.__validate(fixed1)
+        self.fixed2 = self.__validate(fixed2)
+    
+    def __call__(self, fixed1: float = 0.00,
+                       fixed2: float = 0.00,
+                       variable1: float = [0.00],
+                       variable2: float = [0.00]):
+        self.__init__(fixed1=fixed1, fixed2=fixed2, variable1=variable1, variable2=variable2)
+        return self 
 
-    def set_fixed1(self, new_fixed1):
+    def set_fixed1(self, new_fixed1: float):
         '''
         Description
         -----------
@@ -66,9 +81,9 @@ class SimpleBreakEven():
             First process fixed cost. Default is 0.00.
         '''
 
-        self.fixed1 = new_fixed1
+        self.fixed1 = self.__validate(new_fixed1)
 
-    def set_fixed2(self, new_fixed2):
+    def set_fixed2(self, new_fixed2: float):
         '''
         Description
         -----------
@@ -80,9 +95,9 @@ class SimpleBreakEven():
             Second process fixed cost.
         '''
 
-        self.fixed2 = new_fixed2
+        self.fixed2 = self.__validate(new_fixed2)
 
-    def set_variable1(self, new_variable1):
+    def set_variable1(self, new_variable1: list):
         '''
         Description
         -----------
@@ -95,9 +110,9 @@ class SimpleBreakEven():
             Default is [0.00].
         '''
 
-        self.variable1 = new_variable1
+        self.variable1 = self.__validate(new_variable1)
 
-    def set_variable2(self, new_variable2):
+    def set_variable2(self, new_variable2: list):
         '''
         Description
         -----------
@@ -110,9 +125,99 @@ class SimpleBreakEven():
             Default is [0.00].
         '''
         
-        self.variable2 = new_variable2
+        self.variable2 = self.__validate(new_variable2)
         
-    def calc_simple_be(self, decimals=2):
+    def __valid_type(self, value: any) -> bool:
+        '''
+        Validate that the input is greater than zero and is a number type.
+
+        Parameters
+        ----------
+        value: any
+            The value to be validated. Needs to only be a number greater than 0.
+
+        Returns
+        -------
+        result: bool
+            Boolean value that indicates whether the input value type was valid.
+        '''
+
+        result: any
+        value_type: str = str(type(value))
+        type_list: list = [
+            "<class 'float'>",
+            "<class 'int'>"
+        ]
+        try:
+            if value_type in type_list:
+                result = True
+            else:
+                result = False
+                raise Exception('Invalid type provided. Only float or int permitted.')
+        except Exception:
+            raise Exception('Invalid type provided. Only float or int permitted.')
+        return result
+    
+    def __valid_number(self, value: any) -> bool:
+        '''
+        Validates that the value is greater than 0.
+
+        Parameters
+        ----------
+        value: any
+            The value to be tested. Can be any type but ideally should only be a numeric
+            type.
+
+        Returns
+        -------
+        result: bool
+            Boolean value that indicates whether the input value was greater than 0.
+        '''
+        
+        result: bool
+        try:
+            if value >= 0:
+                result = True
+            else:
+                result = False
+                raise Exception('Invalid number. Only positive float or ints permitted')
+        except Exception:
+            raise Exception('Invalid number. Only positive float or ints permitted')
+        return result
+
+    def __validate(self, value: any) -> any:
+        '''
+        Validates that the input types for the class attributes are valid.
+        Attributes are valid if they are of a numeric type and are greater than 0.
+
+        Parameters
+        ----------
+        value: any
+            The value to be tested. Can be of any data type and has no default value.
+        
+        Returns
+        -------
+        result: any
+            The original input value, assuming it has passed all the tests. Can be of
+            any numeric type or a list. 
+        '''
+
+        list_type: str = "<class 'list'>"
+        value_type: str = str(type(value))
+        result: any
+        try:
+            if value_type == list_type:
+                for x in value:
+                    if self.__valid_type(x) and self.__valid_number(x):
+                        result = value
+            else:
+                if self.__valid_type(value) and self.__valid_number(value):
+                    result = value        
+        except Exception:
+            raise BaseException
+        return result
+
+    def calc_simple_be(self, decimals: int = 2):
         '''
         Description
         -----------
@@ -141,6 +246,6 @@ class SimpleBreakEven():
         elif type(self.variable2) == type([1.00]):
             variable2 = sum(self.variable2)
         
-        result = round((self.fixed1 - self.fixed2)/(variable2- variable1), decimals)
+        result: float = round((self.fixed1 - self.fixed2)/(variable2- variable1), decimals)
 
         return result

@@ -24,13 +24,6 @@ TEST_DATA: dict = {
     }
 }
 
-NEG_DATA: dict = {
-    'str_input': 'This is a string.',
-    'invalid_list': ['This is a string'],
-    'valid_list': [10.00, 20.00, 30.00],
-    'bool_input': [True, False]
-}
-    
 class TestBreakEven(unittest.TestCase):
     '''
 
@@ -76,10 +69,8 @@ class TestBreakEven(unittest.TestCase):
         test_variable1: float = TEST_DATA["process1"]["variable"][0]
         test_variable2: float = TEST_DATA["process2"]["variable"][0]
 
-
         # Act
-        
-        be: SimpleBreakEven = self.test_break_even(
+        self.test_break_even(
             fixed1=test_fixed1,
             variable1=test_variable1,
             fixed2=test_fixed2,
@@ -131,17 +122,6 @@ class TestBreakEven(unittest.TestCase):
         
         # Assert
         self.assertEqual(break_even_point, actual_break_even_point)
-
-    def test_input_invalid(self) -> None:
-        '''
-
-        '''
-
-        # Arrange
-        
-        # Act
-
-        # Assert
 
 if __name__ == "__main__":
     unittest.main() 

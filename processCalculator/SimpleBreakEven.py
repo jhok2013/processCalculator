@@ -153,9 +153,9 @@ class SimpleBreakEven():
                 result = True
             else:
                 result = False
-                raise TypeError
+                raise Exception('Invalid type provided. Only float or int permitted.')
         except Exception:
-            raise TypeError
+            raise Exception('Invalid type provided. Only float or int permitted.')
         return result
     
     def __valid_number(self, value: any) -> bool:
@@ -180,9 +180,9 @@ class SimpleBreakEven():
                 result = True
             else:
                 result = False
-                raise ValueError
+                raise Exception('Invalid number. Only positive float or ints permitted')
         except Exception:
-            raise ValueError
+            raise Exception('Invalid number. Only positive float or ints permitted')
         return result
 
     def __validate(self, value: any) -> any:

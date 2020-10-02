@@ -45,18 +45,28 @@ Example of custom construction:
     )
 ```
 
-### Setter methods
+## Calculate Simple Break Even Point
 
-Setter methods follow a the *setVariableName* syntax.
+To calculate the simple break even point of two processes, make sure the object is set and then call the '.calc_simple_be' method.
 
-Example of setter methods:
+Example of '.calc_simple_be':
 
 ```{python}
-    # Create breakEven object
-    be = processCalculator.breakEven.breakEven()
-    #Set fixed and variable costs
-    be.setFixed1(22.34)
-    be.setVariable1([1.30, 1.20])
-    be.setFixed2(20.20)
-    be.setVariable2([2.20, 0.50])
+from processcalculator import SimpleBreakEven
+
+def main():
+    # Create object
+    be = SimpleBreakEven.SimpleBreakEven()
+
+    # Set attributes
+    be.fixed1 = 10.00
+    be.fixed2 = 12.00
+    be.variable1 = [2, 3, 4]
+    be.variable2 = [2, 4, 5]
+
+    # Calculate break even point
+
+    be_point = be.calc_simple_be()
+
+    print(f'The break even point is: {be_point}')
 ```

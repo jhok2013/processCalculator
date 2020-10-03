@@ -1,11 +1,12 @@
 import unittest
+from typing import Union, Iterable, Any, Dict, cast
 
-from context import processcalculator
-from processcalculator import SimpleBreakEven
+from context import processcalculator #type: ignore
+from processcalculator import SimpleBreakEven #type: ignore
 
 # Declare test data that can be accessed from the test class
 
-TEST_DATA: dict = {
+TEST_DATA: Any = {
     "process1": {
         "fixed": 122.00,
         "variable": [
@@ -28,49 +29,24 @@ class TestBreakEven(unittest.TestCase):
     '''
 
     '''
-
     def setUp(self) -> None:
         self.test_break_even = SimpleBreakEven.SimpleBreakEven()
     
     def tearDown(self) -> None:
         self.test_break_even = None
 
-    def test_setter_methods(self):
-        '''
-
-        '''
-
-        # Arrange
-        test_fixed1: float = TEST_DATA["process1"]["fixed"]
-        test_fixed2: float = TEST_DATA["process2"]["fixed"]
-        test_variable1: float = TEST_DATA["process1"]["variable"][0]
-        test_variable2: float = TEST_DATA["process2"]["variable"][0]
-
-        #Act
-        self.test_break_even.set_fixed1(test_fixed1)
-        self.test_break_even.set_fixed2(test_fixed2)
-        self.test_break_even.set_variable1(test_variable1)
-        self.test_break_even.set_variable2(test_variable2)
-
-        #Assert
-        self.assertEqual(self.test_break_even.fixed1, test_fixed1)
-        self.assertEqual(self.test_break_even.fixed2, test_fixed2)
-        self.assertEqual(self.test_break_even.variable1, test_variable1)
-        self.assertEqual(self.test_break_even.variable2, test_variable2)
-
     def test_set_constructor(self):
         '''
 
         '''
-
         # Arrange
-        test_fixed1: float = TEST_DATA["process1"]["fixed"]
-        test_fixed2: float = TEST_DATA["process2"]["fixed"]
-        test_variable1: float = TEST_DATA["process1"]["variable"][0]
-        test_variable2: float = TEST_DATA["process2"]["variable"][0]
+        test_fixed1: Union[float, int] = TEST_DATA["process1"]["fixed"]
+        test_fixed2: Union[float, int] = TEST_DATA["process2"]["fixed"]
+        test_variable1: Iterable[Union[float, int]] = TEST_DATA["process1"]["variable"]
+        test_variable2: Iterable[Union[float, int]] = TEST_DATA["process2"]["variable"]
 
         # Act
-        self.test_break_even(
+        sbe: SimpleBreakEven = SimpleBreakEven.SimpleBreakEven(
             fixed1=test_fixed1,
             variable1=test_variable1,
             fixed2=test_fixed2,
@@ -78,48 +54,31 @@ class TestBreakEven(unittest.TestCase):
         )
 
         # Assert
-        self.assertEqual(self.test_break_even.fixed1, test_fixed1)
-        self.assertEqual(self.test_break_even.fixed2, test_fixed2)
-        self.assertEqual(self.test_break_even.variable1, test_variable1)
-        self.assertEqual(self.test_break_even.variable2, test_variable2)
+        self.assertEqual(sbe.fixed1, test_fixed1)
+        self.assertEqual(sbe.fixed2, test_fixed2)
+        self.assertEqual(sbe.variable1, test_variable1)
+        self.assertEqual(sbe.variable2, test_variable2)
 
-    def test_simple_calc_single_value(self):
+    def test_simple_calc(self):
         '''
 
         '''
 
         # Arrange
-        actual_break_even_point: float = 12.39
-        self.test_break_even(
-            fixed1=TEST_DATA["process1"]["fixed"],
-            variable1=TEST_DATA["process1"]["variable"][0],
-            fixed2=TEST_DATA["process2"]["fixed"],
-            variable2=TEST_DATA["process2"]["variable"][0]
-        )
+        actual_break_even_point: Union[float, int] = 10.46
+        test_fixed1: Union[float, int] = TEST_DATA["process1"]["fixed"]
+        test_fixed2: Union[float, int] = TEST_DATA["process2"]["fixed"]
+        test_variable1: Iterable[Union[float, int]] = TEST_DATA["process1"]["variable"]
+        test_variable2: Iterable[Union[float, int]] = TEST_DATA["process2"]["variable"]
+
+        self.test_break_even.fixed1 = test_fixed1
+        self.test_break_even.variable1 = test_variable1
+        self.test_break_even.fixed2 = test_fixed2
+        self.test_break_even.variable2 = test_variable2
 
         # Act
-        break_even_point: float = self.test_break_even.calc_simple_be()
+        break_even_point: Union[float, int] = self.test_break_even.calc_simple_be()
 
-        # Assert
-        self.assertEqual(break_even_point, actual_break_even_point)
-
-    def test_simple_calc_multiple_values(self):
-        '''
-
-        '''
-
-        # Arrange
-        actual_break_even_point: float = 10.46
-        self.test_break_even(
-            fixed1=TEST_DATA["process1"]["fixed"],
-            variable1=TEST_DATA["process1"]["variable"],
-            fixed2=TEST_DATA["process2"]["fixed"],
-            variable2=TEST_DATA["process2"]["variable"]
-        )
-
-        # Act
-        break_even_point: float = self.test_break_even.calc_simple_be()
-        
         # Assert
         self.assertEqual(break_even_point, actual_break_even_point)
 

@@ -1,24 +1,25 @@
+from typing import Union, Any, Iterable
+
 class SimpleBreakEven():
     '''
     Description
     -----------
     A class to provide simple ways to find the break even point
     of two cost processes. Only works for two processes in the 
-    comparison. Multiple values can be provided for the variable 
-    costs for each process.
+    comparison.
 
     ...
 
     Attributes
     ----------
-    fixed1: float, optional
+    fixed1: Union[float, int], optional
         First process fixed cost. Default value is 0.00.
-    variable1: list of floats, optional
+    variable1: Iterable[Union[float, int]], optional
         List of float values that represents variable costs for process 1.
         Default value is [0.00].
-    fixed2: float, optional
+    fixed2: Union[float, int], optional
         Second process fixed cost. Default value is 0.00.
-    variable2: list of floats, optional
+    variable2: Iterable[Union[float, int]], optional
         List of float values that represents variable costs for process 2
         Default value is [0.00].
     
@@ -29,19 +30,17 @@ class SimpleBreakEven():
         the decimal limit used in the arguments
     '''
 
-    fixed1: float
-    fixed2: float
-    variable1: list
-    variable2: list
+    fixed1: Union[float, int]
+    fixed2: Union[float, int]
+    variable1: Iterable[Union[float, int]]
+    variable2: Iterable[Union[float, int]]
 
-    def __init__(self, fixed1: float = 0.00,
-                       fixed2: float = 0.00,
-                       variable1: list  = [0.00],
-                       variable2: list = [0.00]):
+    def __init__(self, fixed1: Union[float, int] = 0.00,
+                       variable1: Iterable[Union[float, int]] = [0.00],
+                       fixed2: Union[float, int] = 0.00,
+                       variable2: Iterable[Union[float, int]] = [0.00]):
         '''
-        Description
-        -----------
-        Constructs all necessary attributes for the object to function.
+        Private. Constructs all necessary attributes for the object to function.
 
         Parameters
         ----------
@@ -56,115 +55,47 @@ class SimpleBreakEven():
             List of float values that represents variable costs for process 2.
             Default is [0.00].
         '''
-
-        self.variable1 = self.__validate(variable1)        
-        self.variable2 = self.__validate(variable2)
-        self.fixed1 = self.__validate(fixed1)
-        self.fixed2 = self.__validate(fixed2)
+        self.variable1 = self.__validate_variable(variable1)        
+        self.variable2 = self.__validate_variable(variable2)
+        self.fixed1 = self.__validate_fixed(fixed1)
+        self.fixed2 = self.__validate_fixed(fixed2)
     
-    def __call__(self, fixed1: float = 0.00,
-                       fixed2: float = 0.00,
-                       variable1: float = [0.00],
-                       variable2: float = [0.00]):
-        self.__init__(fixed1=fixed1, fixed2=fixed2, variable1=variable1, variable2=variable2)
-        return self 
-
-    def set_fixed1(self, new_fixed1: float):
+    def __call__(self, fixed1: Union[float, int] = 0.00,
+                       variable1: Iterable[Union[float, int]] = [0.00],
+                       fixed2: Union[float, int] = 0.00,
+                       variable2: Iterable[Union[float, int]] = [0.00]):
         '''
-        Description
-        -----------
-        Set the value of the fixed1 attribute to the fixed1 parameter. 
+        Private. Allows the object to be callable.
+        '''
+        call_self: SimpleBreakEven = SimpleBreakEven(fixed1=fixed1, fixed2=fixed2, variable1=variable1, variable2=variable2) 
+        return call_self
+
+    
+    def __validate_variable(self, value: Iterable[Union[float, int]]) -> Iterable[Union[float, int]]:
+        '''
+        Private. Validates all values within the variable cost list.
 
         Parameters
         ----------
-        new_fixed1: float, optional
-            First process fixed cost. Default is 0.00.
-        '''
-
-        self.fixed1 = self.__validate(new_fixed1)
-
-    def set_fixed2(self, new_fixed2: float):
-        '''
-        Description
-        -----------
-        Set the value of the fixed2 attribute to the new_fixed2 parameter.
-
-        Parameters
-        ----------
-        new_fixed2: float, optional
-            Second process fixed cost.
-        '''
-
-        self.fixed2 = self.__validate(new_fixed2)
-
-    def set_variable1(self, new_variable1: list):
-        '''
-        Description
-        -----------
-        Set the value of the variable1 attribute to the new_variable1 parameter
-
-        Parameters
-        ----------
-        new_variable1: list of floats, optional
-            List of float values that represents variable costs for process 1.
-            Default is [0.00].
-        '''
-
-        self.variable1 = self.__validate(new_variable1)
-
-    def set_variable2(self, new_variable2: list):
-        '''
-        Description
-        -----------
-        Set the value of the variable2 attribute to the new_variable2 parameter.
-
-        Parameters
-        ----------
-        new_variable2: list of floats
-            List of float values that represents variable costs for process 2   
-            Default is [0.00].
-        '''
+        value: Iterable[Union[float, int]]
+            The variable cost list to be used in further calculations
         
-        self.variable2 = self.__validate(new_variable2)
-        
-    def __valid_type(self, value: any) -> bool:
-        '''
-        Validate that the input is greater than zero and is a number type.
-
-        Parameters
-        ----------
-        value: any
-            The value to be validated. Needs to only be a number greater than 0.
-
         Returns
         -------
-        result: bool
-            Boolean value that indicates whether the input value type was valid.
+        result: Iterable[Union[float, int]]
+            The original value passed in
         '''
-
-        result: any
-        value_type: str = str(type(value))
-        type_list: list = [
-            "<class 'float'>",
-            "<class 'int'>"
-        ]
-        try:
-            if value_type in type_list:
-                result = True
-            else:
-                result = False
-                raise Exception('Invalid type provided. Only float or int permitted.')
-        except Exception:
-            raise Exception('Invalid type provided. Only float or int permitted.')
+        result = [x for x in value if self.__valid_number(x)]
         return result
-    
-    def __valid_number(self, value: any) -> bool:
+
+    def __valid_number(self, value: Union[float, int]) -> bool:
         '''
-        Validates that the value is greater than 0.
+        Private. Validates that the value is greater than 0.
+        Raises a special exception if the value is not.
 
         Parameters
         ----------
-        value: any
+        value: Union[float ,int]
             The value to be tested. Can be any type but ideally should only be a numeric
             type.
 
@@ -173,51 +104,30 @@ class SimpleBreakEven():
         result: bool
             Boolean value that indicates whether the input value was greater than 0.
         '''
-        
-        result: bool
-        try:
-            if value >= 0:
-                result = True
-            else:
-                result = False
-                raise Exception('Invalid number. Only positive float or ints permitted')
-        except Exception:
-            raise Exception('Invalid number. Only positive float or ints permitted')
+        result: bool = True if value >= 0 else False
+        if not result:
+            raise Exception('Invalid number. Only positive float or ints permitted.')
         return result
 
-    def __validate(self, value: any) -> any:
+    def __validate_fixed(self, value: Union[float, int]) -> Union[float, int]:
         '''
-        Validates that the input types for the class attributes are valid.
-        Attributes are valid if they are of a numeric type and are greater than 0.
+        Private. Validates that the fixed value is greater than or equal to 0.
 
         Parameters
         ----------
-        value: any
+        value: Union[float, int]
             The value to be tested. Can be of any data type and has no default value.
         
         Returns
         -------
-        result: any
+        result: Union[float, int]
             The original input value, assuming it has passed all the tests. Can be of
-            any numeric type or a list. 
+            any numeric type. 
         '''
-
-        list_type: str = "<class 'list'>"
-        value_type: str = str(type(value))
-        result: any
-        try:
-            if value_type == list_type:
-                for x in value:
-                    if self.__valid_type(x) and self.__valid_number(x):
-                        result = value
-            else:
-                if self.__valid_type(value) and self.__valid_number(value):
-                    result = value        
-        except Exception:
-            raise BaseException
+        result: Union[float, int] = value if self.__valid_number(value) else 0
         return result
 
-    def calc_simple_be(self, decimals: int = 2):
+    def calc_simple_be(self, decimals: int = 2) -> Union[float, int]:
         '''
         Description
         -----------
@@ -226,26 +136,16 @@ class SimpleBreakEven():
 
         Parameters
         ----------
-        decimals: float, optional
+        decimals: int, optional
             Amount of decimal places to calculate the break even point.
             Default is 2.
 
         Returns
         -------
-        result: float
+        result: Union[float, int]
             The break even point calculated from the attributes of the object
         '''
-
-        if type(self.variable1) == type(1.00):
-            variable1 = self.variable1
-        elif type(self.variable1) == type([1.00]):
-            variable1 = sum(self.variable1)
-        
-        if type(self.variable2) == type(1.00):
-            variable2 = self.variable2
-        elif type(self.variable2) == type([1.00]):
-            variable2 = sum(self.variable2)
-        
-        result: float = round((self.fixed1 - self.fixed2)/(variable2- variable1), decimals)
-
+        variable1: Union[float, int] = sum(self.variable1)
+        variable2: Union[float, int] = sum(self.variable2)
+        result: Union[float, int] = round((self.fixed1 - self.fixed2)/(variable2- variable1), decimals)
         return result

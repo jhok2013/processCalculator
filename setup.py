@@ -4,13 +4,13 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="example-pkg",
+    name="processcalculator",
     version="0.0.1",
-    author="Example Author",
-    author_email="author@example.com",
-    description="A small example package",
+    author="James Hough",
+    author_email="jhok2013@gmail.com",
+    description="A small package meant to simplify process analysis.",
     long_description=long_description,
-    url="https://github.com/pypa/sampleproject",
+    url="https://github.com/jhok2013/processCalculator",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

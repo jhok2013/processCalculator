@@ -8,8 +8,9 @@ setuptools.setup(
     version="0.0.1",
     author="James Hough",
     author_email="jhok2013@gmail.com",
-    description="A small package meant to simplify process analysis.",
+    description="A small package meant to simplify process analysis. Currently only has SimpleBreakEven.",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     url="https://github.com/jhok2013/processCalculator",
     packages=setuptools.find_packages(),
     classifiers=[
@@ -17,7 +18,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=*.*', # Replace the minimum python version requirement 
+    python_requires='>=3.8', # Replace the minimum python version requirement 
     install_requires=[],
     extras_require={},
     entry_points={

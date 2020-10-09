@@ -1,5 +1,5 @@
 from typing import Union, MutableSequence, Optional 
-from typing import Iterable, Deque, Any, Dict, List
+from typing import Iterable, Deque, Any, Dict, List, Tuple
 
 from collections import deque
 
@@ -12,9 +12,9 @@ class Process(object):
     inputs: List = []
     duration: Union[float, int]
     steps: Iterable[Any] = []
-    parent_process_ids: Iterable[str] = []
     cycle_time: Union[float, int] = 0
     status: str
+    process_children: MutableSequence[Any] = deque()
 
     def __init__(self, process_name: str = "default process", inputs: List = [],
                        duration: Union[float, int] = 0, steps: Iterable[Any] = [],
@@ -25,9 +25,14 @@ class Process(object):
         self.process_name = process_name
         self.inputs = inputs
         self.duration = duration
-        self.steps = steps
         self._process_id = self.__get_hash(self.process_name, self.duration)
         self.status = "READY"
+        if steps:
+            for step in steps:
+                if str(type(step)) == "<class 'processCalculator.Process.Process'>":
+                    self.process_children.append(step._process_id)
+                else:
+                    raise Exception('Invalid step type. Must be Process object.')
     
     def __get_hash(self, process_name: str, duration: Union[float, int]) -> str:
         '''
@@ -40,51 +45,59 @@ class Process(object):
         hash: str = sha224(encoded).hexdigest()
         return hash
 
+    def addSteps(self, *child_processes):
+        '''
+
+        '''
+        for child_process in child_processes:
+            if str(type(child_process)) == "<class 'processCalculator.Process.Process'>":
+                if child_process._process_id != self._process_id:
+                    self.process_children.append(child_process._process_id)
+                else:
+                    pass
+            else:
+                raise Exception('Invalid step type. Must be Process object.')
+        self.steps.append(child_process)
+
     def to_xml(self) -> str:
         '''
 
         '''
-        xml_packet: str = ''
-        xml_deque: Iterable[Any] = deque()
-        xml_tags: Dict[str, str] = {
-            "process_tag":("<process>", "</process>"),
-            "_process_id":("<_process_id>", "</_process_id>"),
-            "process_name":("<process_name>", "</process_name>"),
-            "inputs":("<inputs>", "</inputs>"),
-            "input":("<input>", "</input>"),
-            "duration":("<duration>", "</duration>"),
+        xml_tags: Dict[str, Tuple[str, str]] = {
             "steps":("<steps>", "</steps>"),
             "step":("<step>", "</step>"),
             "parent_process_ids":("<parent_process_ids>", "</parent_process_ids>"),
             "parent_process_id":("<parent_process_id>", "</parent_process_id>"),
-            "cycle_time":("<cycle_time>","</cycle_time>"),
-            "status":("<status>", "</status>")
         }
-        xml_deque.append(xml_tags["process_tag"][0])
-        xml_deque.append(xml_tags["_process_id"][0])
-        xml_deque.append(self._process_id)
-        xml_deque.append(xml_tags["_process_id"][1])
-        xml_deque.append(xml_tags["process_name"][0])
-        xml_deque.append(self.process_name)
-        xml_deque.append(xml_tags["process_name"][1])
-        xml_deque.append(xml_tags["inputs"][0])
-        xml_deque.append(xml_tags["input"][0])
-        for input in self.inputs:
-            xml_deque.append(str(input))
-        xml_deque.append(xml_tags["input"][1])
-        xml_deque.append(xml_tags["inputs"][1])
-        xml_deque.append(xml_tags["duration"][0])
-        xml_deque.append(str(self.duration))
-        xml_deque.append(xml_tags["duration"][1])
-        xml_deque.append(xml_tags["steps"][0])
-        for step in self.steps:
-            xml_deque.append(xml_tags["step"][0])
+        xml_deque: MutableSequence[str] = deque()
+
+        input_str: str = ''.join([
+            "<inputs>",
+            str([''.join('<input>', x, '</input>')] for x in self.inputs).translate({ord(i): None for i in ' [],\''}) if self.inputs else None,
+            "</inputs>"
+        ]) if self.inputs else None
+        child_process_str: str = ''
+        xml_deque.append(
+            f"<process>"
+            f"<process_id>{self._process_id}</process_id>"
+            f"<process_name{self.process_name}</process_name>"
+            f"<duration>{self.duration}</duration>"
+            f"<status>{self.status}</status>"
+            f"<cycle_time>{self.cycle_time}</cycle_time>"
+            f"{input_str}"
             
-            xml_deque.append(xml_tags["step"][1])
-        xml_deque.append(xml_tags["steps"][1])
-        xml_deque.append(xml_tags["process_tag"][1])
-        
-        return xml_packet
+        )
+        if self.steps:
+            xml_deque.append("<steps>")
+            for step in self.steps:
+                if step._process_id in self.process_children and self._process_id not in self.process_children:
+                    xml_deque.append("<step>")
+                    xml_deque.append(step.to_xml())
+                    xml_deque.append("</step>")
+            xml_deque.append("</steps>")
+        xml_deque.append("</process>")
+
+        return "".join(xml_deque)
 
     def to_json(self) -> str:
         '''

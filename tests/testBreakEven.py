@@ -1,8 +1,8 @@
 import unittest
 from typing import Union, Iterable, Any, Dict, cast
 
-from context import processcalculator #type: ignore
-from processcalculator import SimpleBreakEven #type: ignore
+from context import processCalculator #type: ignore
+from processCalculator import SimpleBreakEven #type: ignore
 
 # Declare test data that can be accessed from the test class
 

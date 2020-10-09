@@ -51,11 +51,15 @@ class Process(object):
         '''
         for child_process in child_processes:
             if str(type(child_process)) == "<class 'processCalculator.Process.Process'>":
+                '''
+                This logic removes grandchild object from self.
+                It ends up removing it from both self and the child_process
                 if child_process.process_children:
                     for grandchild in child_process.process_children:
                         if grandchild in self.process_children:
                             self.process_children.remove(grandchild)
                             break
+                '''        
                 if child_process._process_id != self._process_id:
                     self.process_children.append(child_process._process_id)
                     self.steps.append(child_process)

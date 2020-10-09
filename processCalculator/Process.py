@@ -51,17 +51,22 @@ class Process(object):
         '''
         for child_process in child_processes:
             if str(type(child_process)) == "<class 'processCalculator.Process.Process'>":
+                if child_process.process_children:
+                    for grandchild in child_process.process_children:
+                        if grandchild in self.process_children:
+                            self.process_children.remove(grandchild)
+                            break
                 if child_process._process_id != self._process_id:
                     self.process_children.append(child_process._process_id)
+                    self.steps.append(child_process)
                 else:
                     pass
             else:
                 raise Exception('Invalid step type. Must be Process object.')
-        self.steps.append(child_process)
 
     def to_xml(self) -> str:
         '''
-        TO DO: TBD
+
         '''
         input_str: str = ''.join(['<inputs>', str([''.join(['<input>', x, '</input>']) for x in self.inputs]).translate({ord(i): None for i in ' [],\''}), '</inputs>']) if self.inputs else ''
 
@@ -84,7 +89,7 @@ class Process(object):
             '</steps>'
         ]).translate(
             {ord(i): None for i in ' [],\''}
-        ) if self.steps  and self._process_id not in self.process_children else ''
+        ) if self.steps and self._process_id not in self.process_children else ''
 
         xml_packet: str = (
             f"<process>"

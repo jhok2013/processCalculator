@@ -71,7 +71,7 @@ class Process(object):
             str([''.join(['<process_child_id>', x, '</process_child_id>']) for x in self.process_children]).translate(
             {ord(i): None for i in ' [],\''}),
             "</process_children>"
-        ]) if self.process_children else ''
+        ]) if self.process_children and self._process_id not in self.process_children else ''
 
         steps_str: str = ''.join([
             '<steps>',

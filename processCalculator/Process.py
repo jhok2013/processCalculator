@@ -61,8 +61,7 @@ class Process(object):
 
     def to_xml(self) -> str:
         '''
-        TO DO: Add logic so that the process_children, process_child, steps, and step tags will not be returned
-        for the child process.
+        TO DO: TBD
         '''
         input_str: str = ''.join(['<inputs>', str([''.join(['<input>', x, '</input>']) for x in self.inputs]).translate({ord(i): None for i in ' [],\''}), '</inputs>']) if self.inputs else ''
 
@@ -99,16 +98,6 @@ class Process(object):
             f"{steps_str}"
             f"</process>"
         )
-
-        '''
-        if self.steps:
-            xml_deque.append("<steps>")
-            for step in self.steps:
-                if step._process_id in self.process_children and self._process_id not in self.process_children:
-                    xml_deque.append(''.join(['<step>', step.to_xml(), '</step>']))
-            xml_deque.append("</steps>")
-        xml_deque.append("</process>")
-        '''
 
         return xml_packet
 

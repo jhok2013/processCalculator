@@ -40,6 +40,17 @@ class test_process(unittest.TestCase):
         self.p1.addSteps(nested_p)
         p_xml: str = self.p1.to_xml()
         self.assertTrue(True, "test_nested_toxml has passed.")
+    
+    def test_nested2_toxml(self) -> None:
+        '''
+
+        '''
+        nested1: p = self.p2
+        nested2: p = p()
+        nested1.addSteps(nested2)
+        self.p1.addSteps(nested1)
+        p_xml: str = self.p1.to_xml()
+        self.assertTrue(True)
 
 if __name__=="__main__":
     unittest.main()

@@ -85,7 +85,7 @@ class Process(object):
             '</steps>'
         ]).translate(
             {ord(i): None for i in ' [],\''}
-        ) if self.steps else ''
+        ) if self.steps  and self._process_id not in self.process_children else ''
 
         xml_packet: str = (
             f"<process>"

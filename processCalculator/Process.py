@@ -61,43 +61,56 @@ class Process(object):
 
     def to_xml(self) -> str:
         '''
-
+        TO DO: Add logic so that the process_children, process_child, steps, and step tags will not be returned
+        for the child process.
         '''
-        xml_tags: Dict[str, Tuple[str, str]] = {
-            "steps":("<steps>", "</steps>"),
-            "step":("<step>", "</step>"),
-            "parent_process_ids":("<parent_process_ids>", "</parent_process_ids>"),
-            "parent_process_id":("<parent_process_id>", "</parent_process_id>"),
-        }
-        xml_deque: MutableSequence[str] = deque()
+        input_str: str = ''.join(['<inputs>', str([''.join(['<input>', x, '</input>']) for x in self.inputs]).translate({ord(i): None for i in ' [],\''}), '</inputs>']) if self.inputs else ''
 
-        input_str: str = ''.join([
-            "<inputs>",
-            str([''.join('<input>', x, '</input>')] for x in self.inputs).translate({ord(i): None for i in ' [],\''}) if self.inputs else None,
-            "</inputs>"
-        ]) if self.inputs else None
-        child_process_str: str = ''
-        xml_deque.append(
+        child_process_str: str = ''.join([
+            "<process_children>",
+            str([''.join(['<process_child_id>', x, '</process_child_id>']) for x in self.process_children]).translate(
+            {ord(i): None for i in ' [],\''}),
+            "</process_children>"
+        ]) if self.process_children else ''
+
+        steps_str: str = ''.join([
+            '<steps>',
+            str([
+                ''.join([
+                    '<step>',
+                    x.to_xml(),
+                    '</step>'
+                ])
+            for x in self.steps if x._process_id in self.process_children and self._process_id not in self.process_children]),
+            '</steps>'
+        ]).translate(
+            {ord(i): None for i in ' [],\''}
+        ) if self.steps else ''
+
+        xml_packet: str = (
             f"<process>"
             f"<process_id>{self._process_id}</process_id>"
-            f"<process_name{self.process_name}</process_name>"
+            f"<process_name>{self.process_name}</process_name>"
             f"<duration>{self.duration}</duration>"
             f"<status>{self.status}</status>"
             f"<cycle_time>{self.cycle_time}</cycle_time>"
             f"{input_str}"
-            
+            f"{child_process_str}"
+            f"{steps_str}"
+            f"</process>"
         )
+
+        '''
         if self.steps:
             xml_deque.append("<steps>")
             for step in self.steps:
                 if step._process_id in self.process_children and self._process_id not in self.process_children:
-                    xml_deque.append("<step>")
-                    xml_deque.append(step.to_xml())
-                    xml_deque.append("</step>")
+                    xml_deque.append(''.join(['<step>', step.to_xml(), '</step>']))
             xml_deque.append("</steps>")
         xml_deque.append("</process>")
+        '''
 
-        return "".join(xml_deque)
+        return xml_packet
 
     def to_json(self) -> str:
         '''
